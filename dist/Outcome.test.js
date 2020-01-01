@@ -106,37 +106,66 @@ var __awaiter = (undefined && undefined.__awaiter) || function (thisArg, _argume
     });
 };
 
+var TestError;
+(function (TestError) {
+    TestError[TestError["TestError1"] = 0] = "TestError1";
+    TestError[TestError["TestError2"] = 1] = "TestError2";
+})(TestError || (TestError = {}));
+function assertUnreachable(x) {
+    throw new Error();
+}
 function main() {
     return __awaiter(this, void 0, void 0, function* () {
-        const result2 = yield _Outcome__WEBPACK_IMPORTED_MODULE_0__["Outcome"].wrap(testPromise());
-        if (result2.isError()) {
-            console.warn(result2.error);
+        const result1 = yield _Outcome__WEBPACK_IMPORTED_MODULE_0__["Outcome"].wrap(testPromise());
+        if (result1.isError()) {
+            console.warn(result1.error);
             return;
         }
-        console.log(result2.value);
-        const result3 = yield _Outcome__WEBPACK_IMPORTED_MODULE_0__["Outcome"].wrap(testBadPromise());
+        console.log(result1.value);
+        const result2 = yield _Outcome__WEBPACK_IMPORTED_MODULE_0__["Outcome"].wrap(testBadPromise());
+        if (result2.isError()) {
+            console.warn(result2.error);
+        }
+        else {
+            console.log(result2.value);
+        }
+        const result3 = yield test();
         if (result3.isError()) {
             console.warn(result3.error);
         }
         else {
             console.log(result3.value);
         }
-        const result1 = yield test();
-        if (result1.isError()) {
-            console.warn(result1.error);
-            return;
+        const result4 = yield testWithErrorType();
+        if (result4.isError()) {
+            console.warn(result4.error + 2);
         }
-        console.log(result1.value);
+        else {
+            console.log(result4.value);
+        }
+        const result5 = yield testWithErrorType2();
+        if (result5.isError()) {
+            switch (result5.error) {
+                case TestError.TestError1:
+                    console.warn("TestError 1");
+                    break;
+                case TestError.TestError2:
+                    console.warn("TestError 2");
+                    break;
+                default:
+                    assertUnreachable(result5.error);
+            }
+        }
     });
 }
 function testPromise() {
     return new Promise((resolve, reject) => {
-        resolve("Good Promise");
+        setTimeout(resolve.bind(null, "Good Promise"), 500);
     });
 }
 function testBadPromise() {
     return new Promise((resolve, reject) => {
-        reject("Bad Promise");
+        setTimeout(reject.bind(null, "Bad Promise"), 500);
     });
 }
 function test() {
@@ -145,6 +174,19 @@ function test() {
             return _Outcome__WEBPACK_IMPORTED_MODULE_0__["Outcome"].err("Random: Error");
         }
         return _Outcome__WEBPACK_IMPORTED_MODULE_0__["Outcome"].val("Random: Success");
+    });
+}
+function testWithErrorType() {
+    return __awaiter(this, void 0, void 0, function* () {
+        if (Math.round(Math.random()) === 1) {
+            return _Outcome__WEBPACK_IMPORTED_MODULE_0__["Outcome"].err(2);
+        }
+        return _Outcome__WEBPACK_IMPORTED_MODULE_0__["Outcome"].val("Random: Success");
+    });
+}
+function testWithErrorType2() {
+    return __awaiter(this, void 0, void 0, function* () {
+        return _Outcome__WEBPACK_IMPORTED_MODULE_0__["Outcome"].err(TestError.TestError2);
     });
 }
 main();

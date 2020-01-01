@@ -3,7 +3,7 @@ export namespace Outcome {
         return new OutcomeValue(value)
     }
 
-    export function err(error: unknown): OutcomeError {
+    export function err<T>(error: T): OutcomeError<T> {
         return new OutcomeError(error)
     }
 
@@ -16,8 +16,8 @@ export namespace Outcome {
     }
 }
 
-class OutcomeError {
-    constructor(public error: unknown) {}
+class OutcomeError<T = unknown> {
+    constructor(public error: T) {}
 
     isError(): this is OutcomeError {
         return true
@@ -32,4 +32,4 @@ class OutcomeValue<T> {
     }
 }
 
-export type Outcome<T> = OutcomeValue<T> | OutcomeError
+export type Outcome<T, E = unknown> = OutcomeValue<T> | OutcomeError<E>
