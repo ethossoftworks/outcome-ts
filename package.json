@@ -1,0 +1,22 @@
+{
+    "name": "outcome",
+    "description": "An alternative approach to async/await error handling",
+    "authors": "Ryan Mitchener",
+    "version": "1.0.0",
+    "devDependencies": {
+        "serve": "11.2.0"
+    },
+    "dependencies": {
+        "ts-loader": "^6.2.1",
+        "typescript": "3.7.4"
+    },
+    "scripts": {
+        "build-prod": "npx webpack --env prod",
+        "build-dev": "npx webpack --env dev"
+    },
+    "prettier": {
+        "semi": false,
+        "printWidth": 120,
+        "tabWidth": 4
+    }
+}
