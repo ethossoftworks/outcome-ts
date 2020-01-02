@@ -1,6 +1,6 @@
 # Outcome (TypeScript)
 
-## An alternative approach to async/await error handling for TypeScript
+An alternative approach to async/await error handling for TypeScript
 
 # Motivation
 
@@ -32,7 +32,7 @@ Any existing promise can be converted to an `Outcome` with the provided helper f
 
 # Build
 
-```
+```bash
 git clone https://github.com/ryanmitchener/outcome-ts.git
 cd outcome-ts
 yarn          # or npm install
@@ -51,7 +51,7 @@ Using `strictNullChecks` will prevent the Outcome value from being set to null o
 
 ## Basic Usage
 
-```
+```typescript
 async function login(): Promise<Outcome<User>> {
     // Do some things
 
@@ -76,7 +76,7 @@ function main() {
 
 ## Usage With a Defined Error Type
 
-```
+```typescript
 // This could also be a complex union type
 enum UserError {
     EmailNotFound = 0,
