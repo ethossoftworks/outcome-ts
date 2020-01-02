@@ -1,7 +1,7 @@
 import { Outcome } from "../src/Outcome"
 import { TestRunner, TestGroup, assert } from "./TestRunner"
 
-interface TestContext {}
+interface TestContext { }
 
 const testContext = {}
 
@@ -89,4 +89,4 @@ function generatePromise(success: boolean): Promise<string> {
     })
 }
 
-new TestRunner<TestContext>().run(null, Tests)
+TestRunner.run(null, Tests)

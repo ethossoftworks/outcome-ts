@@ -5,8 +5,8 @@ export type TestGroup<T> = {
 
 export type Test<T> = (context: T) => Promise<any>
 
-export class TestRunner<T> {
-    async run(preTestGroupSetup: ((context: T) => void) | null = null, ...testGroups: TestGroup<T>[]) {
+export class TestRunner {
+    static async run<T>(preTestGroupSetup: ((context: T) => void) | null = null, ...testGroups: TestGroup<T>[]) {
         let totalTestCount: number = 0
         let totalPassedCount: number = 0
 
