@@ -12,8 +12,8 @@
         "typescript": "3.7.4"
     },
     "scripts": {
-        "build-prod": "npx webpack --env prod",
-        "build-dev": "npx webpack --env dev"
+        "build": "npx webpack --env prod",
+        "test": "npx webpack --env dev"
     },
     "prettier": {
         "semi": false,

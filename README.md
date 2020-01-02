@@ -4,7 +4,7 @@
 
 # Motivation
 
-Promises and Async/Await are wonderful, flexible APIs that provide a great developer experience. However, promises and async/await have some undesireable syntax when dealing with complex error handling.
+Promises and Async/Await are wonderful, flexible APIs that provide a great developer experience. However, promises and async/await have some undesirable syntax when dealing with complex error handling.
 
 -   Promises and their callbacks can make logic branching more difficult and more confusing to reason about while handling all errors appropriately.
 -   Async/Await uses try/catch syntax to handle errors which has a couple of problems syntactically:
@@ -28,7 +28,16 @@ The goal of Outcome is to allow for clean, complex branching based on success or
 
 `isError()` is a TypeScript type guard that allows for compile-time type inference.
 
-Any existing promise can be converted to an `Outcome` with the provided helper function `wrap`. Since promises to not have error types, wrapping promises will simply use the `unknown` type for the error value.
+Any existing promise can be converted to an `Outcome` with the provided helper function `Outcome.wrap()`. Since promises do not have error types, wrapping promises will simply use the `unknown` type for the error value.
+
+# Build
+
+```
+git clone https://github.com/ryanmitchener/outcome-ts.git
+cd outcome-ts
+yarn          # or npm install
+yarn build    # or npm run build
+```
 
 # Usage
 
@@ -99,7 +108,7 @@ function main() {
                 console.warn("Invalid password")
                 break
             default:
-                // This Guarantees an exahustive case check
+                // This Guarantees an exhaustive case check
                 assertUnreachable(userResult.error)
                 break
         }
