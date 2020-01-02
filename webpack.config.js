@@ -22,11 +22,12 @@ const prodConfig = {
     }
 }
 
-const devConfig = {
+const testConfig = {
     ...prodConfig,
     ...{
-        entry: "./src/Outcome.test.ts",
+        entry: "./test/Outcome.test.ts",
         mode: "development",
+        target: "node",
         output: {
             filename: "Outcome.test.js",
             path: path.resolve(__dirname, "dist")
@@ -38,7 +39,7 @@ module.exports = env => {
     switch (env) {
         case "prod":
             return prodConfig
-        case "dev":
-            return devConfig
+        case "test":
+            return testConfig
     }
 }

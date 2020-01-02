@@ -129,7 +129,7 @@ function promiseFunction(): Promise<string> {
 }
 
 function main() {
-    const wrappedResult = Outcome.wrap(promiseFunction())
+    const wrappedResult = await Outcome.wrap(promiseFunction())
     if (wrappedResult.isError()) {
         console.warn("There was a problem:", wrappedResult.error)
         return

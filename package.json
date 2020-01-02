@@ -13,7 +13,8 @@
     },
     "scripts": {
         "build": "npx webpack --env prod",
-        "test": "npx webpack --env dev"
+        "test": "npx webpack --env test && node dist/Outcome.test.js",
+        "test-inspect": "npx webpack --env test && node --inspect-brk dist/Outcome.test.js"
     },
     "prettier": {
         "semi": false,
