@@ -65,7 +65,7 @@ async function login(): Promise<Outcome<User>> {
 function main() {
     const userResult = await login()
     if (userResult.isError()) {
-        console.warn("There was a problem")
+        console.warn("There was a problem:", userResult.error)
         return
     }
 
@@ -116,5 +116,26 @@ function main() {
 
     // Type inference allows type-safe compile time use of the value
     console.log(userResult.value)
+}
+```
+
+## Wrapping an Existing Promise
+
+```typescript
+function promiseFunction(): Promise<string> {
+    return new Promise((resolve, reject) => {
+        resolve("It worked")
+    })
+}
+
+function main() {
+    const wrappedResult = Outcome.wrap(promiseFunction())
+    if (wrappedResult.isError()) {
+        console.warn("There was a problem:", wrappedResult.error)
+        return
+    }
+
+    // Type inference allows type-safe compile time use of the value
+    console.log(wrappedResult.value)
 }
 ```
