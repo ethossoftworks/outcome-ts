@@ -33,24 +33,31 @@ export class TestRunner {
 					passedCount++
 					totalPassedCount++
 					console.groupEnd()
-					console.log(`%cPassed:  ${testName}`, "color: green")
+					console.log(fmt(`Passed:  ${testName}`, Text.green))
 				} catch (e) {
 					console.groupEnd()
-					console.groupCollapsed(`%cFailed:  ${testName}`, "color: red")
+					console.groupCollapsed(fmt(`Failed:  ${testName}`, Text.red))
 					console.log(e)
 					console.groupEnd()
 				}
 			}
 
-			const color = passedCount === testNames.length ? "color: green" : "color: red"
 			console.groupEnd()
-			console.log(`%cFinished tests: ${passedCount} of ${testNames.length} passed`, color)
+			console.log(
+				fmt(
+					`Finished tests: ${passedCount} of ${testNames.length} passed`,
+					passedCount === testNames.length ? Text.green : Text.red
+				)
+			)
 		}
 
-		const color = totalPassedCount === totalTestCount ? "color: green" : "color: red"
 		console.log(
-			`%c\nFinished all test groups: ${totalPassedCount} of ${totalTestCount} passed`,
-			`font-weight: 700; ${color}`
+			fmt(
+				`\nFinished all test groups: ${totalPassedCount} of ${totalTestCount} passed`,
+				totalPassedCount === totalTestCount ? Text.green : Text.red,
+				Text.bold,
+				Text.inverse
+			)
 		)
 	}
 }
@@ -60,4 +67,16 @@ export function assert(condition: boolean): boolean {
 		throw "Test failed"
 	}
 	return condition
+}
+
+enum Text {
+	green = `\x1b[32m`,
+	red = `\x1b[31m`,
+	bold = `\x1b[1m`,
+	underline = `\x1b[4m`,
+	inverse = `\x1b[7m`
+}
+
+function fmt(message: string, ...formatters: Text[]): string {
+	return `${formatters.join("")}${message}\x1b[0m`
 }

@@ -1,7 +1,7 @@
 import { Outcome } from "../src/Outcome"
 import { TestRunner, TestGroup, assert } from "./TestRunner"
 
-interface TestContext { }
+interface TestContext {}
 
 const testContext = {}
 
