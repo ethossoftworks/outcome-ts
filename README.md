@@ -137,22 +137,24 @@ Promises and Async/Await are wonderful, flexible APIs that provide a great devel
         })
     }
 
-    let bar = null
-    let bar2 = null
+    function main() {
+        let bar = null
+        let bar2 = null
 
-    foo().then(val => {
-        // Bar must be a `let` variable or must be passed along to foo2()
-        bar = val
-        return foo2()
-    }).then(val => {
-        bar2 = val
+        foo().then(val => {
+            // Bar must be a `let` variable or must be passed along to foo2()
+            bar = val
+            return foo2()
+        }).then(val => {
+            bar2 = val
 
-        console.log(bar, bar2)
-    }).catch(e => {
-        // Can only single error handler when using sequential promises
+            console.log(bar, bar2)
+        }).catch(e => {
+            // Can only single error handler when using sequential promises
 
-        // e is an Exception, which requires more type checking before handling the error
-    })
+            // e is an Exception, which requires more type checking before handling the error
+        })
+    }
     ```
 
     Becomes:
@@ -201,17 +203,19 @@ Promises and Async/Await are wonderful, flexible APIs that provide a great devel
         return true
     }
 
-    try {
-        // Anything we want to do with foo must happen in this try/catch block
-        const bar = await foo()
-        const bar2 = await foo2(bar)
+    function main() {
+        try {
+            // Anything we want to do with foo must happen in this try/catch block
+            const bar = await foo()
+            const bar2 = await foo2(bar)
 
-        console.log(bar, bar2)
-    } catch(e) {
-        // e is an Exception, which requires more type checking before handling the error
+            console.log(bar, bar2)
+        } catch(e) {
+            // e is an Exception, which requires more type checking before handling the error
 
-        // Either we handle both errors in a single catch, move into another level of try/catch,
-        // or handle additional errors with another mechanism (separate function, .etc)
+            // Either we handle both errors in a single catch, move into another level of try/catch,
+            // or handle additional errors with another mechanism (separate function, .etc)
+        }
     }
     ```
 
@@ -226,19 +230,21 @@ Promises and Async/Await are wonderful, flexible APIs that provide a great devel
         return Outcome.val(true)
     }
 
-    const bar = await foo()
-    if (bar.isError()) {
-        // Handle individual error
-        return
-    }
+    function main() {
+        const bar = await foo()
+        if (bar.isError()) {
+            // Handle individual error
+            return
+        }
 
-    const bar2 = await foo2(bar)
-    if (bar2.isError()) {
-        // Handle individual error
-        return
-    }
+        const bar2 = await foo2(bar)
+        if (bar2.isError()) {
+            // Handle individual error
+            return
+        }
 
-    console.log(bar.value, bar2.value)
+        console.log(bar.value, bar2.value)
+    }
     ```
 
 [Golang](https://golang.org) uses the concept of [errors as values](https://blog.golang.org/errors-are-values) which allows for checking for errors and handling them without requiring another block indentation. This also allows easier handling of complex error branches.
