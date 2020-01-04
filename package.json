@@ -14,9 +14,10 @@
         "typescript": "3.7.4"
     },
     "scripts": {
-        "build": "npx webpack --env prod",
-        "test": "npx webpack --env test && node dist/Outcome.test.js",
-        "test-inspect": "npx webpack --env test && node --inspect-brk dist/Outcome.test.js"
+        "format": "npx prettier --write --loglevel warn src/**/*.ts test/**/*.ts",
+        "build": "yarn format && npx webpack --env prod",
+        "test": "yarn format && npx webpack --env test && node dist/Outcome.test.js",
+        "test-inspect": "yarn format && npx webpack --env test && node --inspect-brk dist/Outcome.test.js"
     },
     "prettier": {
         "semi": false,
