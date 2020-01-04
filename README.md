@@ -254,7 +254,7 @@ The goal of Outcome is to allow for clean, complex branching based on success or
 
 `Outcome<T, E>` is a [union type](https://www.typescriptlang.org/docs/handbook/advanced-types.html#union-types) of an `OutcomeValue<T>` and an `OutcomeError<E>` type. The `value` and `error` properties of those respective types are only accessible after a type check on the `Outcome`.
 
-`OutcomeError` is by default an [`unknown`] type which enforces type checking to handle any error. This prevents changes to error types causing unknown problems down the road. An error type may be specified to enforce only returning specific types of errors for a giving `Outcome`.
+`OutcomeError` is by default an `unknown` type which enforces type checking to handle any error. This prevents changes to error types causing unknown problems down the road. An error type may be specified to enforce only returning specific types of errors for a giving `Outcome`.
 
 `isError()` is a TypeScript [type guard](https://www.typescriptlang.org/docs/handbook/advanced-types.html#user-defined-type-guards) that allows for compile-time type inference.
 
