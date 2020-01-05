@@ -11,12 +11,12 @@ export type TestGroup<T> = {
 export type Test<T> = (context: T) => Promise<any>
 
 export class TestRunner {
-    static async run<T>(...testGroups: TestGroup<T>[]) {
+    static async run(...testGroups: TestGroup<unknown>[]) {
         let totalTestCount: number = 0
         let totalPassedCount: number = 0
 
         for (let i = 0; i < testGroups.length; i++) {
-            const group: TestGroup<T> = testGroups[i]
+            const group: TestGroup<unknown> = testGroups[i]
             const singleTests: string[] = Object.getOwnPropertyNames(group.tests).filter(testName => {
                 return testName.indexOf("_") === 0
             })
@@ -41,10 +41,17 @@ export class TestRunner {
                     console.groupEnd()
                     console.log(fmt(`\u2713 Passed:  ${testName}`, Text.green))
                 } catch (e) {
-                    console.groupEnd()
-                    console.groupCollapsed(fmt(`\u2717 Failed:  ${testName}`, Text.red))
-                    console.log(e)
-                    console.groupEnd()
+                    if (e instanceof TestRunnerTestPassed) {
+                        passedCount++
+                        totalPassedCount++
+                        console.groupEnd()
+                        console.log(fmt(`\u2713 Passed:  ${testName}`, Text.green))
+                    } else {
+                        console.groupEnd()
+                        console.groupCollapsed(fmt(`\u2717 Failed:  ${testName}`, Text.red))
+                        console.log(e)
+                        console.groupEnd()
+                    }
                 }
                 group.afterEach?.(context)
             }
@@ -70,11 +77,29 @@ export class TestRunner {
     }
 }
 
-export function assert(condition: boolean): boolean {
+class TestRunnerTestPassed {}
+class TestRunnerAssertFailed {
+    constructor(public reason?: string) {}
+}
+class TestRunnerTestFailed {
+    constructor(public reason?: string) {}
+}
+
+/** Asserts a condition is true and fails the test if it is not true. Execution of test continues. */
+export function assert(condition: boolean, failureMessage?: string) {
     if (!condition) {
-        throw "Test failed"
+        throw new TestRunnerAssertFailed(failureMessage)
     }
-    return condition
+}
+
+/** Stops execution of test immediately and passes the test */
+export function pass() {
+    throw new TestRunnerTestPassed()
+}
+
+/** Stops execution of test immediately and fails the test */
+export function fail(reason?: string) {
+    throw new TestRunnerTestFailed(reason)
 }
 
 enum Text {

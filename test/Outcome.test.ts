@@ -1,5 +1,5 @@
 import { Outcome } from "../src/Outcome"
-import { TestRunner, TestGroup, assert } from "./TestRunner"
+import { TestRunner, TestGroup, assert, fail, pass } from "./TestRunner"
 
 interface TestContext {}
 
@@ -17,17 +17,17 @@ const Tests: TestGroup<TestContext> = {
             if (result.isError()) {
                 switch (result.error) {
                     case TestError.TestError1:
-                        assert(false)
+                        fail()
                         return
                     case TestError.TestError2:
-                        assert(true)
+                        pass()
                         return
                     default:
-                        assert(false)
+                        fail()
                         assertUnreachable(result.error)
                 }
             }
-            assert(false)
+            fail()
         },
         testValue: async context => {
             const result = await generateOutcome("It worked!")
