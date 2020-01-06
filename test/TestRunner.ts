@@ -8,98 +8,104 @@ export type TestGroup<T> = {
     afterAll?: (context: T) => void
 }
 
-export type Test<T> = (context: T) => Promise<any>
+export type Test<T> = (t: TestContainer<T>) => Promise<void>
 
-export class TestRunner {
-    static async run(...testGroups: TestGroup<unknown>[]) {
-        let totalTestCount: number = 0
-        let totalPassedCount: number = 0
+type TestContainer<T> = {
+    context: T
+    fail(reason?: string): void
+    assert(condition: boolean, failureMessage?: string): void
+}
 
-        for (let i = 0; i < testGroups.length; i++) {
-            const group: TestGroup<unknown> = testGroups[i]
-            const singleTests: string[] = Object.getOwnPropertyNames(group.tests).filter(testName => {
-                return testName.indexOf("_") === 0
-            })
-            const testNames: string[] = singleTests.length > 0 ? singleTests : Object.getOwnPropertyNames(group.tests)
-            const context = group.context
-            let passedCount: number = 0
-            totalTestCount += testNames.length
+type TestResult = {
+    failed: boolean
+    reason?: string
+}
 
-            console.group(`Running Group (${i + 1} of ${testGroups.length})${group.label ? ": " + group.label : ""}`)
-            group.beforeAll?.(context)
+export async function runTests<T>(...testGroups: TestGroup<T>[]) {
+    let totalTestCount: number = 0
+    let totalPassedCount: number = 0
 
-            for (let j = 0; j < testNames.length; j++) {
-                group.beforeEach?.(context)
-                const testName = testNames[j]
-                const test = group.tests[testName]
+    for (let i = 0; i < testGroups.length; i++) {
+        const group: TestGroup<unknown> = testGroups[i]
+        const singleTests: string[] = Object.getOwnPropertyNames(group.tests).filter(testName => {
+            return testName.indexOf("_") === 0
+        })
+        const testNames: string[] = singleTests.length > 0 ? singleTests : Object.getOwnPropertyNames(group.tests)
+        const testContext = group.context
+        let passedCount: number = 0
+        totalTestCount += testNames.length
 
-                try {
-                    console.groupCollapsed(`Running Test (${j + 1} of ${testNames.length}): ${testName}`)
-                    await test(context)
+        console.group(`Running Group (${i + 1} of ${testGroups.length})${group.label ? ": " + group.label : ""}`)
+        group.beforeAll?.(testContext)
+
+        for (let j = 0; j < testNames.length; j++) {
+            group.beforeEach?.(testContext)
+            const testName = testNames[j]
+            const testFunc = group.tests[testName]
+            const testResult: TestResult = { failed: false }
+            const testContainer = createTestContainer(testContext, testResult)
+
+            try {
+                console.groupCollapsed(`Running Test (${j + 1} of ${testNames.length}): ${testName}`)
+                await testFunc(testContainer)
+
+                if (!testResult.failed) {
                     passedCount++
                     totalPassedCount++
                     console.groupEnd()
                     console.log(fmt(`\u2713 Passed:  ${testName}`, Text.green))
-                } catch (e) {
-                    if (e instanceof TestRunnerTestPassed) {
-                        passedCount++
-                        totalPassedCount++
-                        console.groupEnd()
-                        console.log(fmt(`\u2713 Passed:  ${testName}`, Text.green))
-                    } else {
-                        console.groupEnd()
-                        console.groupCollapsed(fmt(`\u2717 Failed:  ${testName}`, Text.red))
-                        console.log(e)
-                        console.groupEnd()
-                    }
+                } else {
+                    handleFailedTest(testName, testResult.reason)
                 }
-                group.afterEach?.(context)
+            } catch (e) {
+                handleFailedTest(testName, e)
             }
-
-            group.afterAll?.(context)
-            console.groupEnd()
-            console.log(
-                fmt(
-                    `Finished tests: ${passedCount} of ${testNames.length} passed`,
-                    passedCount === testNames.length ? Text.green : Text.red
-                )
-            )
+            group.afterEach?.(testContext)
         }
 
+        group.afterAll?.(testContext)
+        console.groupEnd()
         console.log(
             fmt(
-                `\nFinished all test groups: ${totalPassedCount} of ${totalTestCount} passed`,
-                totalPassedCount === totalTestCount ? Text.green : Text.red,
-                Text.bold,
-                Text.inverse
+                `Finished tests: ${passedCount} of ${testNames.length} passed`,
+                passedCount === testNames.length ? Text.green : Text.red
             )
         )
     }
+
+    console.log(
+        fmt(
+            `\nFinished all test groups: ${totalPassedCount} of ${totalTestCount} passed`,
+            totalPassedCount === totalTestCount ? Text.green : Text.red,
+            Text.bold,
+            Text.inverse
+        )
+    )
 }
 
-class TestRunnerTestPassed {}
-class TestRunnerAssertFailed {
-    constructor(public reason?: string) {}
-}
-class TestRunnerTestFailed {
-    constructor(public reason?: string) {}
-}
-
-/** Asserts a condition is true and fails the test if it is not true. Execution of test continues. */
-export function assert(condition: boolean, failureMessage?: string) {
-    if (!condition) {
-        throw new TestRunnerAssertFailed(failureMessage)
+function handleFailedTest(testName: string, reason?: string | Error) {
+    console.groupEnd()
+    console.groupCollapsed(fmt(`\u2717 Failed:  ${testName}`, Text.red))
+    if (reason) {
+        console.log(reason)
     }
+    console.groupEnd()
 }
 
-/** Stops execution of test immediately and passes the test */
-export function pass() {
-    throw new TestRunnerTestPassed()
-}
-
-/** Stops execution of test immediately and fails the test */
-export function fail(reason?: string) {
-    throw new TestRunnerTestFailed(reason)
+function createTestContainer<T>(context: T, result: TestResult): TestContainer<T> {
+    return {
+        context: context,
+        fail: (reason?: string) => {
+            result.failed = true
+            result.reason = reason
+        },
+        assert: (condition, failureMessage) => {
+            if (!condition) {
+                result.failed = true
+                result.reason = failureMessage
+            }
+        }
+    }
 }
 
 enum Text {
