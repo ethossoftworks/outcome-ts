@@ -18,7 +18,6 @@ const Tests: TestGroup<typeof testContext> = {
                         fail()
                         return
                     case TestError.TestError2:
-                        fail("Dunno")
                         return
                     default:
                         fail()
