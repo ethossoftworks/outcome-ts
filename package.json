@@ -1,18 +1,26 @@
 {
-    "name": "outcome-ts",
+    "name": "@ethossoftworks/outcome",
     "description": "An alternative approach to async/await error handling for TypeScript",
     "authors": "Ryan Mitchener",
     "version": "1.0.0",
     "license": "MIT",
+    "repository": {
+        "url": "https://github.com/ethossoftworks/outcome-ts.git"
+    },
+    "main": "dist/Outcome.js",
+    "files": [
+        "dist/types/src/Outcome.d.ts"
+    ],
+    "types": "dist/types/src/Outcome.d.ts",
     "devDependencies": {
         "webpack": "^4.41.5",
-        "webpack-cli": "^3.3.10"
-    },
-    "dependencies": {
+        "webpack-cli": "^3.3.10",
+        "clean-webpack-plugin": "3.0.0",
         "prettier": "^1.19.1",
         "ts-loader": "^6.2.1",
         "typescript": "3.7.4"
     },
+    "dependencies": {},
     "scripts": {
         "format": "npx prettier --write --loglevel warn src/**/*.ts test/**/*.ts",
         "build": "yarn format && npx webpack --env prod",
