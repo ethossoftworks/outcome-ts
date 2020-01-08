@@ -1,5 +1,5 @@
-import { Outcome } from "../src/Outcome"
-import { TestGroup, runTests } from "./TestRunner"
+import { TestGroup, runTests } from "@ethossoftworks/knock-on-wood"
+import { Outcome } from "./Outcome"
 
 const testContext = {}
 
