@@ -10,7 +10,7 @@ An alternative approach to async/await error handling for TypeScript
 # Build
 
 ```bash
-git clone https://github.com/ryanmitchener/outcome-ts.git
+git clone https://github.com/ethossoftworks/outcome-ts.git
 cd outcome-ts
 yarn                 # or npm install
 yarn build           # or npm run build

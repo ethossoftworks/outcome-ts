@@ -1,43 +1,40 @@
-import { Outcome } from "../src/Outcome"
-import { TestRunner, TestGroup, assert } from "./TestRunner"
+import { TestGroup, runTests } from "@ethossoftworks/knock-on-wood"
+import { Outcome } from "./Outcome"
 
-interface TestContext {}
+const testContext = {}
 
-const testContext: TestContext = {}
-
-const Tests: TestGroup<TestContext> = {
+const Tests: TestGroup<typeof testContext> = {
     context: testContext,
     tests: {
-        testError: async context => {
+        testError: async ({ assert }) => {
             const result = await generateOutcome(null, false)
             assert(result.isError() && result.error === false)
         },
-        testErrorWithType: async context => {
+        testErrorWithType: async ({ fail }) => {
             const result = await generateTypedOutcome(null, TestError.TestError2)
             if (result.isError()) {
                 switch (result.error) {
                     case TestError.TestError1:
-                        assert(false)
+                        fail()
                         return
                     case TestError.TestError2:
-                        assert(true)
                         return
                     default:
-                        assert(false)
+                        fail()
                         assertUnreachable(result.error)
                 }
             }
-            assert(false)
+            fail()
         },
-        testValue: async context => {
+        testValue: async ({ assert }) => {
             const result = await generateOutcome("It worked!")
             assert(!result.isError() && result.value === "It worked!")
         },
-        testWrapSuccess: async context => {
+        testWrapSuccess: async ({ assert }) => {
             const result = await Outcome.wrap(generatePromise(true))
             assert(!result.isError() && result.value == "OK")
         },
-        testWrapError: async context => {
+        testWrapError: async ({ assert }) => {
             const result = await Outcome.wrap(generatePromise(false))
             assert(result.isError() && result.error == "Error")
         }
@@ -57,7 +54,7 @@ function generateOutcome<T>(successVal: T | null = null, errorVal: unknown = nul
             } else if (errorVal !== null) {
                 resolve(Outcome.err(errorVal))
             }
-        }, 200)
+        }, 100)
     })
 }
 
@@ -69,7 +66,7 @@ function generateTypedOutcome<T, E>(successVal: T | null = null, errorVal: E | n
             } else if (errorVal !== null) {
                 resolve(Outcome.err(errorVal))
             }
-        }, 200)
+        }, 100)
     })
 }
 
@@ -85,8 +82,8 @@ function generatePromise(success: boolean): Promise<string> {
             } else {
                 reject("Error")
             }
-        }, 200)
+        }, 100)
     })
 }
 
-TestRunner.run(Tests)
+runTests(Tests)
