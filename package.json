@@ -7,6 +7,12 @@
     "repository": {
         "url": "https://github.com/ethossoftworks/outcome-ts.git"
     },
+    "keywords": [
+        "typescript",
+        "asynchronous",
+        "error-handling",
+        "async-await"
+    ],
     "main": "dist/Outcome.js",
     "files": [
         "dist/types/src/Outcome.d.ts"

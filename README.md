@@ -29,8 +29,17 @@ Outcome works best (while not required) with the following TypeScript compiler o
 
 Using `strictNullChecks` will prevent the Outcome value from being set to null or undefined unless the user-specified Outcome type supports it.
 
+## Add to Project
+```bash
+npm install @ethossoftworks/outcome
+# or
+yarn add @ethossoftworks/outcome
+```
+
 ## Create a Standard Outcome
 ```typescript
+import { Outcome } from "@ethossoftworks/outcome"
+
 async function foo(): Promise<Outcome<User>> {
     // Do some things
 
@@ -44,6 +53,8 @@ async function foo(): Promise<Outcome<User>> {
 
 ## Consume an Outcome
 ```typescript
+import { Outcome } from "@ethossoftworks/outcome"
+
 const fooResult = await foo()
 if (fooResult.isError()) {
     console.warn("There was a problem:", fooResult.error)
@@ -56,6 +67,8 @@ console.log(fooResult.value)
 
 ## Wrap an Existing Promise With an Outcome
 ```typescript
+import { Outcome } from "@ethossoftworks/outcome"
+
 function promiseFunction(): Promise<string> {
     return new Promise((resolve, reject) => {
         resolve("It worked")
@@ -75,6 +88,8 @@ console.log(wrappedResult.value)
 ## Usage With a Defined Error Type
 
 ```typescript
+import { Outcome } from "@ethossoftworks/outcome"
+
 enum UserError {
     EmailNotFound = 0,
     InvalidPassword
