@@ -9,4 +9,5 @@
         "editor.formatOnSave": true,
         "editor.defaultFormatter": "esbenp.prettier-vscode",
     },
+    "deepcode.review.results.hideInformationIssues": false,
 }
