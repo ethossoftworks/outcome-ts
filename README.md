@@ -85,6 +85,29 @@ if (wrappedResult.isError()) {
 console.log(wrappedResult.value)
 ```
 
+## Wrap Try/Catch With an Outcome
+```typescript
+import { Outcome } from "@ethossoftworks/outcome"
+
+async function myApiRequest(): Promise<Outcome<ApiResponse>> {
+    return Outcome.try(async () => {
+        const response = await fetch('http://example.com/movies.json')
+        const json = response.json()
+        return ApiResponse(json)
+    })
+}
+
+const result = await myApiRequest()
+
+if (result.isError()) {
+    console.warn("There was a problem:", result.error)
+    return
+}
+
+// Type inference allows type-safe compile time use of the value
+console.log(result.value)
+```
+
 ## Usage With a Defined Error Type
 
 ```typescript

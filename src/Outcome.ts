@@ -13,6 +13,14 @@ export const Outcome = {
         } catch (e) {
             return new OutcomeError(e)
         }
+    },
+
+    try: async <T>(block: () => Promise<T>): Promise<Outcome<T>> => {
+        try {
+            return new OutcomeValue(await block())
+        } catch (e) {
+            return new OutcomeError(e)
+        }
     }
 }
 

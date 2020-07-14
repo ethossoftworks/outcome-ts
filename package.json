@@ -2,7 +2,7 @@
     "name": "@ethossoftworks/outcome",
     "description": "An alternative approach to async/await error handling for TypeScript",
     "authors": "Ryan Mitchener",
-    "version": "1.0.2",
+    "version": "1.1.0",
     "license": "MIT",
     "repository": {
         "url": "https://github.com/ethossoftworks/outcome-ts.git"

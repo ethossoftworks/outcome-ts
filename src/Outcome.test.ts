@@ -37,6 +37,22 @@ const Tests: TestGroup<typeof testContext> = {
         testWrapError: async ({ assert }) => {
             const result = await Outcome.wrap(generatePromise(false))
             assert(result.isError() && result.error == "Error")
+        },
+        testTry: async ({ assert }) => {
+            const try1 = async () => {
+                return (null as any).test()
+            }
+
+            const try2 = async () => {
+                await new Promise(resolve => setTimeout(resolve, 1000))
+                return 1
+            }
+
+            const result1 = await Outcome.try(try1)
+            assert(result1.isError())
+
+            const result2 = await Outcome.try(try2)
+            assert(!result2.isError() && result2.value === 1)
         }
     }
 }
