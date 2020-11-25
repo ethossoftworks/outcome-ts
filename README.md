@@ -6,6 +6,7 @@ An alternative approach to async/await error handling for TypeScript
 * [Usage](#usage)
 * [Motivation](#motivation)
 * [Design](#design)
+* [Release Notes](#release-notes)
 
 # Build
 
@@ -44,10 +45,10 @@ async function foo(): Promise<Outcome<User>> {
     // Do some things
 
     if (success) {
-        return Outcome.val(myValue)
+        return Outcome.ok(myValue)
     }
 
-    return Outcome.err("Foo bar")
+    return Outcome.error("Foo bar")
 }
 ```
 
@@ -122,10 +123,10 @@ async function login(): Promise<Outcome<User, UserError>> {
     // Do some things
 
     if (success) {
-        return Outcome.val(user)
+        return Outcome.ok(user)
     }
 
-    return Outcome.err(UserError.InvalidPassword)
+    return Outcome.error(UserError.InvalidPassword)
 }
 
 function assertUnreachable(x: never): never {
@@ -198,11 +199,11 @@ Promises and Async/Await are wonderful, flexible APIs that provide a great devel
     Becomes:
     ```typescript
     async function foo(): Promise<Outcome<Bar, FooError>> {
-        return Outcome.val(new Bar())
+        return Outcome.ok(new Bar())
     }
 
     async function foo2(): Promise<Outcome<Bar, Foo2Error>> {
-        return Outcome.val(new Bar())
+        return Outcome.ok(new Bar())
     }
 
     function main() {
@@ -260,12 +261,12 @@ Promises and Async/Await are wonderful, flexible APIs that provide a great devel
     Becomes:
     ```typescript
     async function foo(): Promise<Outcome<Bar, FooError>> {
-        return Outcome.val(new Bar())
+        return Outcome.ok(new Bar())
     }
 
     async function foo2(bar: Bar): Promise<Outcome<boolean, Foo2Error>> {
         // Some task requiring bar
-        return Outcome.val(true)
+        return Outcome.ok(true)
     }
 
     function main() {
@@ -296,10 +297,22 @@ The downside of how Golang handles errors is that it does not enforce handling e
 
 The goal of Outcome is to allow for clean, complex branching based on success or failure of operations (whether asynchronous or not). This is achieved through type guards (which allow for compile time type inference) and forcing the checking of success/failure before working with the corresponding value. Outcome is also designed to allow for specified error types to allow for cleaner APIs where users can know ahead-of-time all of the different errors that a particular function can return.
 
-`Outcome<T, E>` is a [union type](https://www.typescriptlang.org/docs/handbook/advanced-types.html#union-types) of an `OutcomeValue<T>` and an `OutcomeError<E>` type. The `value` and `error` properties of those respective types are only accessible after a type check on the `Outcome`.
+`Outcome<T, E>` is a [union type](https://www.typescriptlang.org/docs/handbook/advanced-types.html#union-types) of the `Ok<T>` and `Error<E>` types. The `value` and `error` properties of those respective types are only accessible after a type check on the `Outcome`.
 
-`OutcomeError` is by default an `unknown` type which enforces type checking to handle any error. This prevents changes to error types causing unknown problems down the road. An error type may be specified to enforce only returning specific types of errors for a giving `Outcome`.
+`Error` is by default an `unknown` type which enforces type checking to handle any error. This prevents changes to error types causing unknown problems down the road. An error type may be specified to enforce only returning specific types of errors for a giving `Outcome`.
 
-`isError()` is a TypeScript [type guard](https://www.typescriptlang.org/docs/handbook/advanced-types.html#user-defined-type-guards) that allows for compile-time type inference.
+`isOk()`, `isError()`, and `Outcome.isOutcome()` are TypeScript [type guards](https://www.typescriptlang.org/docs/handbook/advanced-types.html#user-defined-type-guards) that allows for compile-time type inference.
 
 Any existing promise can be converted to an `Outcome` with the provided helper function `Outcome.wrap()`. Since promises do not have error types, wrapping promises will use the `unknown` type for the error value.
+
+
+# Release Notes
+## 2.0.0
+- Added `Outcome.isOutcome()`
+- Added `isOk()` method to outcomes
+- Changed `Outcome.val()` to `Outcome.ok()`
+- Changed `Outcome.err()` to `Outcome.error()`
+## 1.1.0
+- Added `Outcome.try()`
+## 1.0.0
+- Initial Release
