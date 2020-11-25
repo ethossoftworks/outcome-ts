@@ -13,11 +13,11 @@
         "error-handling",
         "async-await"
     ],
-    "main": "dist/Outcome.js",
+    "main": "Outcome.js",
     "files": [
-        "dist/types/src/Outcome.d.ts"
+        "types/src/Outcome.d.ts"
     ],
-    "types": "dist/types/src/Outcome.d.ts",
+    "types": "types/src/Outcome.d.ts",
     "devDependencies": {
         "@ethossoftworks/knock-on-wood": "^1.0.2",
         "clean-webpack-plugin": "3.0.0",
@@ -29,9 +29,11 @@
     },
     "scripts": {
         "format": "npx prettier --write --loglevel warn src/**/*.ts test/**/*.ts",
-        "build": "yarn format && npx webpack --env prod",
-        "test": "yarn format && npx webpack --env test && node dist/Outcome.test.js",
-        "test-inspect": "yarn format && npx webpack --env test && node --inspect-brk dist/Outcome.test.js"
+        "build": "yarn format && npx webpack --env prod && node scripts/post-build.js",
+        "test": "yarn format && npx webpack --env test && node build/Outcome.test.js",
+        "test-inspect": "yarn format && npx webpack --env test && node --inspect-brk build/Outcome.test.js",
+        "build-pack": "yarn build && cd ./build && npm pack",
+        "build-publish": "yarn build && cd ./build && npm publish --access public"
     },
     "prettier": {
         "semi": false,
