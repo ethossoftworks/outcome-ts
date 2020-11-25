@@ -26,9 +26,15 @@ const Tests: TestGroup<typeof testContext> = {
             }
             fail()
         },
-        testValue: async ({ assert }) => {
+        testOk: async ({ assert }) => {
             const result = await generateOutcome("It worked!")
             assert(!result.isError() && result.value === "It worked!")
+        },
+        testIsOk: async ({ assert }) => {
+            const error = Outcome.error("Error")
+            const ok = Outcome.ok("Ok")
+            assert(!error.isOk())
+            assert(ok.isOk())
         },
         testWrapSuccess: async ({ assert }) => {
             const result = await Outcome.wrap(generatePromise(true))
@@ -53,6 +59,16 @@ const Tests: TestGroup<typeof testContext> = {
 
             const result2 = await Outcome.try(try2)
             assert(!result2.isError() && result2.value === 1)
+        },
+        testIsOutcome: async ({ assert }) => {
+            const notOutcome: any = {}
+            const outcomeOk: any = Outcome.ok(1)
+            const outcomeError: any = Outcome.error("error")
+
+            assert(!Outcome.isOutcome(undefined))
+            assert(!Outcome.isOutcome(notOutcome))
+            assert(Outcome.isOutcome(outcomeOk))
+            assert(Outcome.isOutcome(outcomeError))
         }
     }
 }
@@ -66,9 +82,9 @@ function generateOutcome<T>(successVal: T | null = null, errorVal: unknown = nul
     return new Promise(resolve => {
         setTimeout(() => {
             if (successVal !== null) {
-                resolve(Outcome.val(successVal))
+                resolve(Outcome.ok(successVal))
             } else if (errorVal !== null) {
-                resolve(Outcome.err(errorVal))
+                resolve(Outcome.error(errorVal))
             }
         }, 100)
     })
@@ -78,9 +94,9 @@ function generateTypedOutcome<T, E>(successVal: T | null = null, errorVal: E | n
     return new Promise(resolve => {
         setTimeout(() => {
             if (successVal !== null) {
-                resolve(Outcome.val(successVal))
+                resolve(Outcome.ok(successVal))
             } else if (errorVal !== null) {
-                resolve(Outcome.err(errorVal))
+                resolve(Outcome.error(errorVal))
             }
         }, 100)
     })
