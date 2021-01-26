@@ -22,7 +22,7 @@ const prodConfig = {
     plugins: [new CleanWebpackPlugin()],
     output: {
         filename: `${packageName}.js`,
-        path: path.resolve(__dirname, "dist"),
+        path: path.resolve(__dirname, "build"),
         library: "Outcome",
         libraryTarget: "umd",
         globalObject: "this"
@@ -37,7 +37,7 @@ const testConfig = {
         target: "node",
         output: {
             filename: `${packageName}.test.js`,
-            path: path.resolve(__dirname, "dist")
+            path: path.resolve(__dirname, "build")
         }
     }
 }

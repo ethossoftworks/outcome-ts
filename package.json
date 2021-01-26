@@ -13,11 +13,11 @@
         "error-handling",
         "async-await"
     ],
-    "main": "dist/Outcome.js",
+    "main": "Outcome.js",
     "files": [
-        "dist/types/src/Outcome.d.ts"
+        "types/src/Outcome.d.ts"
     ],
-    "types": "dist/types/src/Outcome.d.ts",
+    "types": "types/src/Outcome.d.ts",
     "devDependencies": {
         "@ethossoftworks/knock-on-wood": "^2.0.0",
         "clean-webpack-plugin": "^3.0.0",
