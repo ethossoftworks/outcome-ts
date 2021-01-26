@@ -43,10 +43,9 @@ const testConfig = {
 }
 
 module.exports = env => {
-    switch (env) {
-        case "prod":
-            return prodConfig
-        case "test":
-            return testConfig
+    if (env.prod) {
+        return prodConfig
+    } else if (env.test) {
+        return testConfig
     }
 }
