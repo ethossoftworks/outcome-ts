@@ -1,6 +1,6 @@
 const outcomeSymbol = Symbol()
 
-class Ok<T> {
+export class Ok<T> {
     private outcomeSymbol = outcomeSymbol
 
     constructor(public value: T) {}
@@ -14,7 +14,7 @@ class Ok<T> {
     }
 }
 
-class Error<E = unknown> {
+export class Error<E = unknown> {
     private outcomeSymbol = outcomeSymbol
 
     constructor(public error: E) {}
@@ -50,7 +50,7 @@ export const Outcome = {
 
     isOutcome: (other: any): other is Outcome<any> => {
         return other !== undefined && other.outcomeSymbol === outcomeSymbol
-    }
+    },
 }
 
 export type Outcome<T, E = unknown> = Ok<T> | Error<E>
