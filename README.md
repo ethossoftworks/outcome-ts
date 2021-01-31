@@ -307,6 +307,8 @@ Any existing promise can be converted to an `Outcome` with the provided helper f
 
 
 # Release Notes
+## 2.1.1
+* Converted build system to Rollup
 ## 2.1.0
 * Exported Error and Ok types for custom type guards
 ## 2.0.0
