@@ -2,7 +2,7 @@
     "name": "@ethossoftworks/outcome",
     "description": "An alternative approach to async/await error handling for TypeScript",
     "authors": "Ryan Mitchener",
-    "version": "2.1.1",
+    "version": "2.2.0",
     "license": "MIT",
     "repository": {
         "url": "https://github.com/ethossoftworks/outcome-ts.git"
@@ -23,8 +23,6 @@
     ],
     "types": "types/Outcome.d.ts",
     "sideEffects": false,
-    "dependencies": {},
-    "peerDependencies": {},
     "devDependencies": {
         "@ethossoftworks/knock-on-wood": "^2.0.0",
         "@rollup/plugin-commonjs": "^17.0.0",
@@ -34,7 +32,7 @@
         "rollup-plugin-sourcemaps": "^0.6.3",
         "rollup-plugin-terser": "^7.0.2",
         "source-map-explorer": "^2.5.2",
-        "typescript": "^4.1.3"
+        "typescript": "^5.3.3"
     },
     "scripts": {
         "format": "npx prettier --write --loglevel warn src/**/*.ts",

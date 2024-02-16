@@ -2,11 +2,11 @@
 
 An alternative approach to async/await error handling for TypeScript
 
-* [Build](#build)
-* [Usage](#usage)
-* [Motivation](#motivation)
-* [Design](#design)
-* [Release Notes](#release-notes)
+-   [Build](#build)
+-   [Usage](#usage)
+-   [Motivation](#motivation)
+-   [Design](#design)
+-   [Release Notes](#release-notes)
 
 # Build
 
@@ -31,6 +31,7 @@ Outcome works best (while not required) with the following TypeScript compiler o
 Using `strictNullChecks` will prevent the Outcome value from being set to null or undefined unless the user-specified Outcome type supports it.
 
 ## Add to Project
+
 ```bash
 npm install @ethossoftworks/outcome
 # or
@@ -38,6 +39,7 @@ yarn add @ethossoftworks/outcome
 ```
 
 ## Create a Standard Outcome
+
 ```typescript
 import { Outcome } from "@ethossoftworks/outcome"
 
@@ -53,6 +55,7 @@ async function foo(): Promise<Outcome<User>> {
 ```
 
 ## Consume an Outcome
+
 ```typescript
 import { Outcome } from "@ethossoftworks/outcome"
 
@@ -67,6 +70,7 @@ console.log(fooResult.value)
 ```
 
 ## Wrap an Existing Promise With an Outcome
+
 ```typescript
 import { Outcome } from "@ethossoftworks/outcome"
 
@@ -87,12 +91,13 @@ console.log(wrappedResult.value)
 ```
 
 ## Wrap Try/Catch With an Outcome
+
 ```typescript
 import { Outcome } from "@ethossoftworks/outcome"
 
 async function myApiRequest(): Promise<Outcome<ApiResponse>> {
     return Outcome.try(async () => {
-        const response = await fetch('http://example.com/movies.json')
+        const response = await fetch("http://example.com/movies.json")
         const json = response.json()
         return ApiResponse(json)
     })
@@ -116,7 +121,7 @@ import { Outcome } from "@ethossoftworks/outcome"
 
 enum UserError {
     EmailNotFound = 0,
-    InvalidPassword
+    InvalidPassword,
 }
 
 async function login(): Promise<Outcome<User, UserError>> {
@@ -159,10 +164,12 @@ console.log(userResult.value)
 Promises and Async/Await are wonderful, flexible APIs that provide a great developer experience. However, promises and async/await have some undesirable syntax when dealing with complex error handling.
 
 ## Promise Issues
+
 -   Promise callbacks can make logic branching more difficult and more confusing to reason about while handling all errors appropriately.
-- Promises in TypeScript do not have error types associated with them.
+-   Promises in TypeScript do not have error types associated with them.
 
     For example:
+
     ```typescript
     function foo(): Promise<Bar> {
         return new Promise((resolve, reject) => {
@@ -180,23 +187,26 @@ Promises and Async/Await are wonderful, flexible APIs that provide a great devel
         let bar = null
         let bar2 = null
 
-        foo().then(val => {
-            // Bar must be a `let` variable or must be passed along to foo2()
-            bar = val
-            return foo2()
-        }).then(val => {
-            bar2 = val
+        foo()
+            .then((val) => {
+                // Bar must be a `let` variable or must be passed along to foo2()
+                bar = val
+                return foo2()
+            })
+            .then((val) => {
+                bar2 = val
 
-            console.log(bar, bar2)
-        }).catch(e => {
-            // Can only single error handler when using sequential promises
-
-            // e is an Exception, which requires more type checking before handling the error
-        })
+                console.log(bar, bar2)
+            })
+            .catch((e) => {
+                // Can only single error handler when using sequential promises
+                // e is an Exception, which requires more type checking before handling the error
+            })
     }
     ```
 
     Becomes:
+
     ```typescript
     async function foo(): Promise<Outcome<Bar, FooError>> {
         return Outcome.ok(new Bar())
@@ -225,13 +235,15 @@ Promises and Async/Await are wonderful, flexible APIs that provide a great devel
     ```
 
 ## Async/Await Issues
+
 -   Using Async/Await safely necessitates the use try/catch blocks to handle errors
 -   To use a value outside of the try/catch block, a user must define a `let` instead of a `const` outside of the try/catch block. This is not guaranteed to be safe at compile time and type inference is iffy.
 -   Using `const`, the resultant value can only be used within the try block which may prevent clean handling of additional errors when using the resultant value. In addition, another level of indentation is undesirable.
 -   Often errors in an application are not exceptional and it should not be necessary to treat them as exceptions.
-- All errors are exception and have no helpful type association.
+-   All errors are exception and have no helpful type association.
 
     For example:
+
     ```typescript
     async function foo(): Promise<Bar> {
         return new Bar()
@@ -249,9 +261,8 @@ Promises and Async/Await are wonderful, flexible APIs that provide a great devel
             const bar2 = await foo2(bar)
 
             console.log(bar, bar2)
-        } catch(e) {
+        } catch (e) {
             // e is an Exception, which requires more type checking before handling the error
-
             // Either we handle both errors in a single catch, move into another level of try/catch,
             // or handle additional errors with another mechanism (separate function, .etc)
         }
@@ -259,6 +270,7 @@ Promises and Async/Await are wonderful, flexible APIs that provide a great devel
     ```
 
     Becomes:
+
     ```typescript
     async function foo(): Promise<Outcome<Bar, FooError>> {
         return Outcome.ok(new Bar())
@@ -292,7 +304,6 @@ The downside of how Golang handles errors is that it does not enforce handling e
 
 `Outcome` strives to provide type-safe error handling without the syntactic bloat of try/catches or callbacks.
 
-
 # Design
 
 The goal of Outcome is to allow for clean, complex branching based on success or failure of operations (whether asynchronous or not). This is achieved through type guards (which allow for compile time type inference) and forcing the checking of success/failure before working with the corresponding value. Outcome is also designed to allow for specified error types to allow for cleaner APIs where users can know ahead-of-time all of the different errors that a particular function can return.
@@ -305,18 +316,32 @@ The goal of Outcome is to allow for clean, complex branching based on success or
 
 Any existing promise can be converted to an `Outcome` with the provided helper function `Outcome.wrap()`. Since promises do not have error types, wrapping promises will use the `unknown` type for the error value.
 
-
 # Release Notes
+
+## 2.2.0
+
+-   Updated TypeScript version
+-   Added helpers to Outcome class
+
 ## 2.1.1
-* Converted build system to Rollup
+
+-   Converted build system to Rollup
+
 ## 2.1.0
-* Exported Error and Ok types for custom type guards
+
+-   Exported Error and Ok types for custom type guards
+
 ## 2.0.0
-- Added `Outcome.isOutcome()`
-- Added `isOk()` method to outcomes
-- Changed `Outcome.val()` to `Outcome.ok()`
-- Changed `Outcome.err()` to `Outcome.error()`
+
+-   Added `Outcome.isOutcome()`
+-   Added `isOk()` method to outcomes
+-   Changed `Outcome.val()` to `Outcome.ok()`
+-   Changed `Outcome.err()` to `Outcome.error()`
+
 ## 1.1.0
-- Added `Outcome.try()`
+
+-   Added `Outcome.try()`
+
 ## 1.0.0
-- Initial Release
+
+-   Initial Release

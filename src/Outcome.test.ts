@@ -75,6 +75,38 @@ const Tests = () => {
         assert(!isTestError(outcome2), "Outcome.Error<string> passed the check")
         assert(isTestError(outcome3), "Outcome.Error<number> did not pass the check")
     })
+    test("runOnOk", async () => {
+        let runCount = 0
+        const ok = Outcome.ok("value")
+        const error = Outcome.error("error")
+        ok.runOnOk(() => runCount++)
+        error.runOnOk(() => runCount++)
+
+        assert(runCount === 1, `runOnOk was run ${runCount} times`)
+    })
+    test("runOnError", async () => {
+        let runCount = 0
+        const ok = Outcome.ok("value")
+        const error = Outcome.error("error")
+        ok.runOnError((error) => runCount++)
+        error.runOnError((error) => runCount++)
+
+        assert(runCount === 1, `runOnError was run ${runCount} times`)
+    })
+    test("unwrapOrDefault", async () => {
+        const ok: Outcome<string> = Outcome.ok("value")
+        const error: Outcome<string> = Outcome.error("error")
+
+        assert(ok.unwrapOrDefault("1") === "value", "Default incorrect on ok")
+        assert(error.unwrapOrDefault("1") === "1", "Default incorrect on error")
+    })
+    test("unwrapOrNull", async () => {
+        const ok: Outcome<string> = Outcome.ok("value")
+        const error: Outcome<string> = Outcome.error("error")
+
+        assert(ok.unwrapOrNull() === "value", "Default incorrect on ok")
+        assert(error.unwrapOrNull() === null, "Default incorrect on error")
+    })
 }
 
 enum TestError {

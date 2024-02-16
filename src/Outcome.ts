@@ -1,36 +1,68 @@
 const outcomeSymbol = Symbol()
 
-export class Ok<T> {
+export class Ok<T, E = unknown> {
     private outcomeSymbol = outcomeSymbol
 
     constructor(public value: T) {}
 
-    isError(): this is Error<T> {
+    isError(): this is Error<T, E> {
         return false
     }
 
-    isOk(): this is Ok<T> {
+    isOk(): this is Ok<T, E> {
         return true
+    }
+
+    runOnOk(block: (value: T) => void) {
+        block(this.value)
+    }
+
+    runOnError(block: (error: E) => void) {
+        // Noop
+    }
+
+    unwrapOrDefault(defaultValue: T): T {
+        return this.value
+    }
+
+    unwrapOrNull(): T | null {
+        return this.value
     }
 }
 
-export class Error<E = unknown> {
+export class Error<T, E = unknown> {
     private outcomeSymbol = outcomeSymbol
 
     constructor(public error: E) {}
 
-    isError(): this is Error {
+    isError(): this is Error<T, E> {
         return true
     }
 
-    isOk(): this is Ok<any> {
+    isOk(): this is Ok<T, E> {
         return false
+    }
+
+    runOnOk(block: (value: T) => void) {
+        // Noop
+    }
+
+    runOnError(block: (error: E) => void) {
+        block(this.error)
+    }
+
+    unwrapOrDefault(defaultValue: T): T {
+        return defaultValue
+    }
+
+    unwrapOrNull(): T | null {
+        return null
     }
 }
 
 export const Outcome = {
-    ok: <T>(value: T) => new Ok(value),
-    error: <E>(error: E) => new Error(error),
+    ok: <T>(value: T): Outcome<T, never> => new Ok(value),
+    error: <E>(error: E): Outcome<never, E> => new Error(error),
 
     wrap: async <T>(promise: Promise<T>): Promise<Outcome<T>> => {
         try {
@@ -53,4 +85,4 @@ export const Outcome = {
     },
 }
 
-export type Outcome<T, E = unknown> = Ok<T> | Error<E>
+export type Outcome<T, E = unknown> = Ok<T, E> | Error<T, E>
