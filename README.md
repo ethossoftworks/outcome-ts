@@ -318,6 +318,10 @@ Any existing promise can be converted to an `Outcome` with the provided helper f
 
 # Release Notes
 
+## 2.2.1
+
+-   Fixed npm package
+
 ## 2.2.0
 
 -   Updated TypeScript version
